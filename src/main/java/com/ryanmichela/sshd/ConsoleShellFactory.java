@@ -1,11 +1,20 @@
 package com.ryanmichela.sshd;
 
+import com.ryanmichela.sshd.ConsoleCommandCompleter;
+import com.ryanmichela.sshd.ConsoleLogFormatter;
+import com.ryanmichela.sshd.FlushyOutputStream;
+import com.ryanmichela.sshd.FlushyStreamHandler;
+import com.ryanmichela.sshd.SshTerminal;
+import com.ryanmichela.sshd.SshdPlugin;
+import com.ryanmichela.sshd.StreamHandlerAppender;
 import com.ryanmichela.sshd.implementations.SSHDCommandSender;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.sshd.common.Factory;
-import org.apache.sshd.server.Command;
+import org.apache.sshd.server.shell.ShellFactory;
+import org.apache.sshd.server.command.Command;
+import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 import org.bukkit.Bukkit;
@@ -16,15 +25,11 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
-public class ConsoleShellFactory implements Factory<Command> {
+public class ConsoleShellFactory implements ShellFactory {
 
     static SSHDCommandSender sshdCommandSender = new SSHDCommandSender();
 
-    public Command get() {
-        return this.create();
-    }
-
-    public Command create() {
+    public Command createShell(ChannelSession cs) {
         return new ConsoleShell();
     }
 
@@ -72,58 +77,76 @@ public class ConsoleShellFactory implements Factory<Command> {
             this.callback = callback;
         }
 
-        public void start(Environment env) throws IOException {
-            try {
-                consoleReader = new ConsoleReader(in, new FlushyOutputStream(out), new SshTerminal());
-                consoleReader.setExpandEvents(true);
-                consoleReader.addCompleter(new ConsoleCommandCompleter());
+        @Override
+		public void start(ChannelSession cs, Environment env) throws IOException
+		  {
+			  try
+			  {
+				  consoleReader = new ConsoleReader(in, new FlushyOutputStream(out), new SshTerminal());
+				  consoleReader.setExpandEvents(true);
+				  consoleReader.addCompleter(new ConsoleCommandCompleter());
 
-                StreamHandler streamHandler = new FlushyStreamHandler(out, new ConsoleLogFormatter(), consoleReader);
-                streamHandlerAppender = new StreamHandlerAppender(streamHandler);
+				  StreamHandler streamHandler = new FlushyStreamHandler(out, new ConsoleLogFormatter(), consoleReader);
+				  streamHandlerAppender		  = new StreamHandlerAppender(streamHandler);
 
-                ((Logger) LogManager.getRootLogger()).addAppender(streamHandlerAppender);
+				  ((Logger)LogManager.getRootLogger()).addAppender(streamHandlerAppender);
 
-                environment = env;
-                thread = new Thread(this, "SSHD ConsoleShell " + env.getEnv().get(Environment.ENV_USER));
-                thread.start();
-            } catch (Exception e) {
-                throw new IOException("Error starting shell", e);
-            }
+				  environment = env;
+				  thread	  = new Thread(this, "SSHD ConsoleShell " + env.getEnv().get(Environment.ENV_USER));
+				  thread.start();
+			  }
+			  catch (Exception e)
+			  {
+				  throw new IOException("Error starting shell", e);
+			  }
         }
 
-        public void destroy() {
-            ((Logger) LogManager.getRootLogger()).removeAppender(streamHandlerAppender);
-        }
+        @Override
+		public void destroy(ChannelSession cs) { ((Logger)LogManager.getRootLogger()).removeAppender(streamHandlerAppender); }
 
-        public void run() {
-            try {
+		public void run()
+        {
+            try
+            {
                 if (!SshdPlugin.instance.getConfig().getString("mode").equals("RPC"))
                     printPreamble(consoleReader);
-                while (true) {
+                while (true)
+                {
                     String command = consoleReader.readLine("\r>", null);
-                    if (command == null) continue;
-                    if (command.equals("exit") || command.equals("quit")) break;
-                    Bukkit.getScheduler().runTask(SshdPlugin.instance, () -> {
-                        if (SshdPlugin.instance.getConfig().getString("mode").equals("RPC") &&
-                            command.startsWith("rpc")) {
-                            //NO ECHO NO PREAMBLE AND SHIT
-                            String cmd = command.substring("rpc".length() + 1, command.length());
-                            Bukkit.dispatchCommand(sshdCommandSender, cmd);
-                        } else {
-                            SshdPlugin.instance.getLogger()
-                                    .info("<" + environment.getEnv().get(Environment.ENV_USER) + "> " + command);
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
-                        }
-                    });
+                    if (command == null)
+                        continue;
+                    if (command.equals("exit") || command.equals("quit"))
+                        break;
+                    Bukkit.getScheduler().runTask(
+                        SshdPlugin.instance, () ->
+                        {
+                            if (SshdPlugin.instance.getConfig().getString("mode").equals("RPC") && command.startsWith("rpc"))
+                            {
+                                // NO ECHO NO PREAMBLE AND SHIT
+                                String cmd = command.substring("rpc".length() + 1, command.length());
+                                Bukkit.dispatchCommand(sshdCommandSender, cmd);
+                            }
+                            else
+                            {
+                                SshdPlugin.instance.getLogger().info("<" + environment.getEnv().get(Environment.ENV_USER) + "> "
+                                                                    + command);
+                                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                            }
+                        });
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 SshdPlugin.instance.getLogger().log(Level.SEVERE, "Error processing command from SSH", e);
-            } finally {
+            }
+            finally
+            {
                 callback.onExit(0);
             }
         }
 
-        private void printPreamble(ConsoleReader consoleReader) throws IOException {
+		private void printPreamble(ConsoleReader consoleReader) throws IOException
+        {
             consoleReader.println("  _____ _____ _    _ _____" + "\r");
             consoleReader.println(" / ____/ ____| |  | |  __ \\" + "\r");
             consoleReader.println("| (___| (___ | |__| | |  | |" + "\r");
@@ -136,5 +159,5 @@ public class ConsoleShellFactory implements Factory<Command> {
             consoleReader.println("Type 'exit' to exit the shell." + "\r");
             consoleReader.println("===============================================" + "\r");
         }
-    }
+	}
 }

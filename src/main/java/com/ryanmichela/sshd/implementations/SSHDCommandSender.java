@@ -1,6 +1,5 @@
 package com.ryanmichela.sshd.implementations;
 
-import com.ryanmichela.sshd.ConsoleShellFactory;
 import com.ryanmichela.sshd.SshdPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +14,8 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
+
+import com.ryanmichela.sshd.ConsoleShellFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class SSHDCommandSender implements ConsoleCommandSender, CommandSender {
     }
 
     public String getName() {
-        return "SSHD CONSOLE";
+        return "Console";
     }
 
     public boolean isOp() {

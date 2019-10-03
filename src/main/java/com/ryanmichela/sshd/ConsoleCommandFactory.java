@@ -1,7 +1,8 @@
 package com.ryanmichela.sshd;
 
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.CommandFactory;
+import org.apache.sshd.server.command.Command;
+import org.apache.sshd.server.command.CommandFactory;
+import org.apache.sshd.server.channel.ChannelSession;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import java.io.OutputStream;
 public class ConsoleCommandFactory implements CommandFactory {
 
     @Override
-    public Command createCommand(String command) {
+    public Command createCommand(ChannelSession cs, String command) {
         return new ConsoleCommand(command);
     }
 
@@ -50,7 +51,7 @@ public class ConsoleCommandFactory implements CommandFactory {
         }
 
         @Override
-        public void start(Environment environment) throws IOException {
+        public void start(ChannelSession cs, Environment environment) throws IOException {
             try {
                 SshdPlugin.instance.getLogger()
                         .info("[U: " + environment.getEnv().get(Environment.ENV_USER) + "] " + command);
@@ -63,8 +64,6 @@ public class ConsoleCommandFactory implements CommandFactory {
         }
 
         @Override
-        public void destroy() {
-
-        }
-    }
+        public void destroy(ChannelSession cn) {}
+	}
 }
