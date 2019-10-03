@@ -1,7 +1,7 @@
 Spigot-SSHD
 ===========
 
-[![Build Status](https://travis-ci.org/rmichela/Bukkit-SSHD.png)](https://travis-ci.org/rmichela/Bukkit-SSHD)
+[![Build Status](https://travis-ci.org/Justasic/Spigot-SSHD.svg?branch=master)](https://travis-ci.org/Justasic/Spigot-SSHD)
 
 Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with SSHD.
 
@@ -51,7 +51,7 @@ None - just install and go.
 None - SSHD uses cryptographic certificates or a secure username and password to verify remote access.
 
 ## Source Code
-[Get the source on GitHub](https://github.com/Justasic/Bukkit-SSHD "Source Code")
+[Get the source on GitHub](https://github.com/Justasic/Spigot-SSHD "Source Code")
 
 ## Metrics
 
