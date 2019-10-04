@@ -1,22 +1,35 @@
 # The IP addresses(s) the SSH server will listen on. Use a comma separated list for multiple addresses.
 # Leave as "all" for all addresses.
-listenAddress: all
-# The port the SSH server will listen on.
-port: 22
+ListenAddress: all
+# The port the SSH server will listen on. Note that anything above 1024 will require you to run
+# the whole minecraft server with elevated privileges, this is not recommended and you should
+# use iptables to route packets from a lower port.
+Port: 1025
 
 # Operational mode. Don't touch if you don't know what you're doing. Can be either DEFAULT or RPC
-mode: DEFAULT
+Mode: DEFAULT
 
 # Enable built-in SFTP server or not. You'll be able to connect and upload/download files via SFTP protocol.
 # Might be useful for testing purposes as well , i. e. docker containers.
-enableSFTP: true
+EnableSFTP: true
+
+# Number of times a person can fail to use an SSH key or enter a password
+# before it terminates the connection.
+LoginRetries: 3
 
 # By default, only public key authentication is enabled. This is the most secure mode.
-# To authorize a user to log in with public key authentication, install their public
-# PEM certificate in the authorized_users directory. Name the key file with user's user
-# name (no file extension).
+# To authorize a user to login with their public key, install their key using the
+# OpenSSH authorized_keys file format in the authorized_users directory. Name the key
+# file with the user's username and no extension. Note: If you want to let a user have
+# many keys, you can append the keys to their file in authorized_users.
 
 # For less secure username and password based authentication, complete the sections below.
-credentials:
+
+# Type of hashing to use for the passwords below.
+# Options are: PLAIN (insecure), bcrypt, pbkdf, sha256
+PasswordType: bcrypt
+
+# Associate each username with a password hash (or the password if the PasswordType is set to PLAIN)
+Credentials:
 #    user1: password1
 #    user2: password2

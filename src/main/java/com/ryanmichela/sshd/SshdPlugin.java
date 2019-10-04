@@ -44,8 +44,8 @@ class SshdPlugin extends JavaPlugin
 		instance = this;
 
 		sshd = SshServer.setUpDefaultServer();
-		sshd.setPort(getConfig().getInt("port", 22));
-		String host = getConfig().getString("listenAddress", "all");
+		sshd.setPort(getConfig().getInt("Port", 1025));
+		String host = getConfig().getString("ListenAddress", "all");
 		sshd.setHost(host.equals("all") ? null : host);
 
 		File hostKey		= new File(getDataFolder(), "hostkey");
@@ -56,7 +56,7 @@ class SshdPlugin extends JavaPlugin
 		sshd.setPasswordAuthenticator(new ConfigPasswordAuthenticator());
 		sshd.setPublickeyAuthenticator(new PublicKeyAuthenticator(authorizedKeys));
 
-		if (getConfig().getBoolean("enableSFTP"))
+		if (getConfig().getBoolean("EnableSFTP"))
 		{
 			sshd.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
 			sshd.setFileSystemFactory(

@@ -11,30 +11,38 @@ import java.util.Map;
  */
 public class ConfigPasswordAuthenticator implements PasswordAuthenticator {
 
-    private Map<String, Integer> failCounts = new HashMap<String, Integer>();
+	private Map<String, Integer> FailCounts = new HashMap<String, Integer>();
 
-    @Override
-    public boolean authenticate(String username, String password, ServerSession serverSession) {
-        if (SshdPlugin.instance.getConfig().getString("credentials." + username).equals(password)) {
-            failCounts.put(username, 0);
-            return true;
-        }
-        SshdPlugin.instance.getLogger().info("Failed login for " + username + " using password authentication.");
+	@Override
+	public boolean authenticate(String username, String password, ServerSession ss)
+	{
+		if (SshdPlugin.instance.getConfig().getString("Credentials." + username).equals(password))
+		{
+			FailCounts.put(username, 0);
+			return true;
+		}
+		SshdPlugin.instance.getLogger().info("Failed login for " + username + " using password authentication.");
 
-        try {
-            Thread.sleep(3000);
-            if (failCounts.containsKey(username)) {
-                failCounts.put(username, failCounts.get(username) + 1);
-            } else {
-                failCounts.put(username, 1);
-            }
-            if (failCounts.get(username) >= 3) {
-                failCounts.put(username, 0);
-                serverSession.close(true);
-            }
-        } catch (InterruptedException e) {
-            // do nothing
-        }
-        return false;
-    }
+		Integer tries = SshdPlugin.instance.getConfig().getInt("LoginRetries");
+
+		try
+		{
+			Thread.sleep(3000);
+			if (this.FailCounts.containsKey(username))
+				this.FailCounts.put(username, this.FailCounts.get(username) + 1);
+			else
+				this.FailCounts.put(username, 1);
+
+			if (this.FailCounts.get(username) >= tries)
+			{
+				this.FailCounts.put(username, 0);
+				ss.close(true);
+			}
+		}
+		catch (InterruptedException e)
+		{
+			// do nothing
+		}
+		return false;
+	}
 }

@@ -8,6 +8,8 @@ import org.apache.sshd.server.session.ServerSession;
 
 import java.io.File;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.io.FileReader;
 import java.security.PublicKey;
 
@@ -16,57 +18,54 @@ import java.security.PublicKey;
  */
 public class PublicKeyAuthenticator implements PublickeyAuthenticator
 {
+	private File authorizedKeysDir;
+	private Map<String, Integer> FailCounts = new HashMap<String, Integer>();
 
-  private File authorizedKeysDir;
-
-  public PublicKeyAuthenticator(File authorizedKeysDir) { this.authorizedKeysDir = authorizedKeysDir; }
+	public PublicKeyAuthenticator(File authorizedKeysDir) { this.authorizedKeysDir = authorizedKeysDir; }
 
 	@Override public boolean authenticate(String username, PublicKey key, ServerSession session)
 	{
 		byte[] keyBytes = key.getEncoded();
-		File keyFile	= new File(authorizedKeysDir, username);
+		File keyFile 	= new File(authorizedKeysDir, username);
+		Integer tries   = SshdPlugin.instance.getConfig().getInt("LoginRetries");
 
 		if (keyFile.exists())
 		{
 			try
             {
+				// Read all the public key entries
                 List<AuthorizedKeyEntry> pklist = AuthorizedKeyEntry.readAuthorizedKeys(keyFile.toPath());
-                
+                // Get an authenticator
                 PublickeyAuthenticator auth = PublickeyAuthenticator.fromAuthorizedEntries(username, session, pklist,
                         PublicKeyEntryResolver.IGNORING);
 
-				boolean accepted = auth.authenticate(username, key, session);
-
-                if (accepted)
-                {
+				// Validate that the logging in user has the same valid SSH key
+				if (auth.authenticate(username, key, session))
+				{
 					SshdPlugin.instance.getLogger().info(
 						username + " successfully authenticated via SSH session using key file " + keyFile.getAbsolutePath());
+					FailCounts.put(username, 0);
+					return true;
 				}
                 else
                 {
 					SshdPlugin.instance.getLogger().info(
 						username + " failed authentication via SSH session using key file " + keyFile.getAbsolutePath());
 				}
-                return accepted;
-				/*
 
-				FileReader  fr = new FileReader(keyFile);
-				PemDecoder  pd = new PemDecoder(fr);
-				PublicKey k  = pd.getPemBytes();
-				pd.close();
-
-				if (k != null)
-				{
-					if (ArrayUtils.isEquals(key.getEncoded(), k.getEncoded()))
-					{
-						return true;
-					}
-				}
+				// If the user fails with several SSH keys, then terminate the connection.
+				if (this.FailCounts.containsKey(username))
+					this.FailCounts.put(username, this.FailCounts.get(username) + 1);
 				else
+					this.FailCounts.put(username, 1);
+
+				if (this.FailCounts.get(username) >= tries)
 				{
-					SshdPlugin.instance.getLogger().severe("Failed to parse PEM file. " + keyFile.getAbsolutePath());
-                }
-                */
+					this.FailCounts.put(username, 0);
+					session.close(true);
+				}
+
+				return false;
 			}
 			catch (Exception e)
 			{
