@@ -8,6 +8,7 @@ import com.ryanmichela.sshd.SshTerminal;
 import com.ryanmichela.sshd.SshdPlugin;
 import com.ryanmichela.sshd.StreamHandlerAppender;
 import com.ryanmichela.sshd.implementations.SSHDCommandSender;
+import com.ryanmichela.sshd.ConsoleLogFormatter;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -22,6 +23,7 @@ import org.bukkit.Bukkit;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
@@ -155,6 +157,7 @@ public class ConsoleShellFactory implements ShellFactory {
 			}
 			finally
 			{
+				SshdPlugin.instance.getLogger().log(Level.INFO, this.Username + " disconnected from SSH.");
 				callback.onExit(0);
 			}
 		}
@@ -167,8 +170,10 @@ public class ConsoleShellFactory implements ShellFactory {
 			cr.println(" \\___ \\\\___ \\|  __  | |  | |" + "\r");
 			cr.println(" ____) |___) | |  | | |__| |" + "\r");
 			cr.println("|_____/_____/|_|  |_|_____/" + "\r");
-			cr.println("Connected to: " + Bukkit.getServer().getName() + "\r");
-			cr.println("- " + Bukkit.getServer().getMotd() + "\r");
+			// Doesn't really guarantee our actual system hostname but
+			// it's better than not having one at all.
+			cr.println("Connected to: " + InetAddress.getLocalHost().getHostName() + " (" + Bukkit.getServer().getName() + ")\r");
+			cr.println(ConsoleLogFormatter.ColorizeString(Bukkit.getServer().getMotd()) + "\r");
 			cr.println("\r");
 			cr.println("Type 'exit' to exit the shell." + "\r");
 			cr.println("===============================================" + "\r");

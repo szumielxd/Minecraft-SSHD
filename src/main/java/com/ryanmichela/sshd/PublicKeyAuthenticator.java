@@ -42,8 +42,6 @@ public class PublicKeyAuthenticator implements PublickeyAuthenticator
 				// Validate that the logging in user has the same valid SSH key
 				if (auth.authenticate(username, key, session))
 				{
-					SshdPlugin.instance.getLogger().info(
-						username + " successfully authenticated via SSH session using key file " + keyFile.getAbsolutePath());
 					FailCounts.put(username, 0);
 					return true;
 				}
