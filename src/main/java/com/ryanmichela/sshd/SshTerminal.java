@@ -7,13 +7,13 @@ import jline.TerminalSupport;
  */
 public class SshTerminal extends TerminalSupport {
 
-    protected SshTerminal() {
-        super(true);
-    }
+	protected SshTerminal() {
+		super(true);
+	}
 
-    @Override
-    public void init() throws Exception {
-        setAnsiSupported(true);
-        setEchoEnabled(true);
-    }
+	@Override
+	public void init() throws Exception {
+		setAnsiSupported(true);
+		setEchoEnabled(true);
+	}
 }

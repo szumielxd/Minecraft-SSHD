@@ -116,10 +116,21 @@ public class ConsoleShellFactory implements ShellFactory {
 				while (true)
 				{
 					String command = this.ConsoleReader.readLine("\r>", null);
-					if (command == null || command.trim().isEmpty())
+					// The user sent CTRL+D to close the shell, terminate the session.
+					if (command == null)
+						break;
+					// Skip someone spamming enter
+					if (command.trim().isEmpty())
 						continue;
+					// User wants to exit 
 					if (command.equals("exit") || command.equals("quit"))
 						break;
+					// Clear the text from the screen (on supported terminals)
+					if (command.equals("cls"))
+					{
+						this.ConsoleReader.clearScreen();
+						continue;
+					}
 
 					Bukkit.getScheduler().runTask(
 						SshdPlugin.instance, () ->
