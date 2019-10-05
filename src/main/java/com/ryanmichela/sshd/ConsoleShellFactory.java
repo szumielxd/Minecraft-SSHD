@@ -20,6 +20,10 @@ import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -89,9 +93,9 @@ public class ConsoleShellFactory implements ShellFactory {
 				this.ConsoleReader.addCompleter(new ConsoleCommandCompleter());
 
 				StreamHandler streamHandler = new FlushyStreamHandler(out, new ConsoleLogFormatter(), this.ConsoleReader);
-				streamHandlerAppender		  = new StreamHandlerAppender(streamHandler);
+				this.streamHandlerAppender		  = new StreamHandlerAppender(streamHandler);
 
-				((Logger)LogManager.getRootLogger()).addAppender(streamHandlerAppender);
+				((Logger)LogManager.getRootLogger()).addAppender(this.streamHandlerAppender);
 
 				this.environment = env;
 				this.Username = env.getEnv().get(Environment.ENV_USER);
@@ -107,7 +111,7 @@ public class ConsoleShellFactory implements ShellFactory {
 		}   
 
 		@Override
-		public void destroy(ChannelSession cs) { ((Logger)LogManager.getRootLogger()).removeAppender(streamHandlerAppender); }
+		public void destroy(ChannelSession cs) { ((Logger)LogManager.getRootLogger()).removeAppender(this.streamHandlerAppender); }
 
 		public void run()
 		{
@@ -150,6 +154,9 @@ public class ConsoleShellFactory implements ShellFactory {
 							}
 						});
 				}
+				// This should help stop one of the bugs where bytes are waiting to be written
+				// but the client fucked off already so the plugin throws an exception.
+				((Logger)LogManager.getRootLogger()).removeAppender(this.streamHandlerAppender);
 			}
 			catch (IOException e)
 			{
@@ -164,16 +171,25 @@ public class ConsoleShellFactory implements ShellFactory {
 
 		private void printPreamble(ConsoleReader cr) throws IOException
 		{
-			cr.println("  _____ _____ _    _ _____" + "\r");
-			cr.println(" / ____/ ____| |  | |  __ \\" + "\r");
-			cr.println("| (___| (___ | |__| | |  | |" + "\r");
-			cr.println(" \\___ \\\\___ \\|  __  | |  | |" + "\r");
-			cr.println(" ____) |___) | |  | | |__| |" + "\r");
-			cr.println("|_____/_____/|_|  |_|_____/" + "\r");
+			File f = new File(SshdPlugin.instance.getDataFolder(), "motd.txt");
+			try 
+			{
+				BufferedReader br = new BufferedReader(new FileReader(f));
+
+				String st;
+				while ((st = br.readLine()) != null)
+					cr.println(ConsoleLogFormatter.ColorizeString(st) + "\r");
+			}
+			catch (FileNotFoundException e)
+			{
+				SshdPlugin.instance.getLogger().log(Level.WARNING, "Could not open " + f + ": File does not exist.");
+				// Not showing the SSH motd is not a fatal failure, let the session continue. 
+			}
+
 			// Doesn't really guarantee our actual system hostname but
 			// it's better than not having one at all.
 			cr.println("Connected to: " + InetAddress.getLocalHost().getHostName() + " (" + Bukkit.getServer().getName() + ")\r");
-			cr.println(ConsoleLogFormatter.ColorizeString(Bukkit.getServer().getMotd()) + "\r");
+			cr.println(ConsoleLogFormatter.ColorizeString(Bukkit.getServer().getMotd()).replaceAll("\n", "\r\n"));
 			cr.println("\r");
 			cr.println("Type 'exit' to exit the shell." + "\r");
 			cr.println("===============================================" + "\r");

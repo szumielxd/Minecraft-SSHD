@@ -10,7 +10,9 @@ import com.ryanmichela.sshd.ConsoleShellFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.logging.Level;
 
@@ -29,8 +31,20 @@ class SshdPlugin extends JavaPlugin
 		saveDefaultConfig();
 		File authorizedKeys = new File(getDataFolder(), "authorized_keys");
 		if (!authorizedKeys.exists())
-		{
 			authorizedKeys.mkdirs();
+
+		try
+		{
+			File motd = new File(getDataFolder(), "motd.txt");
+			if (!motd.exists())
+			{
+				InputStream link = (getClass().getResourceAsStream("/motd.txt"));
+				Files.copy(link, motd.getAbsoluteFile().toPath());
+			}
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 
 		// Don't go any lower than INFO or SSHD will cause a stack overflow exception.
