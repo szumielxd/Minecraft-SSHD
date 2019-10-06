@@ -17,16 +17,22 @@ EnableSFTP: true
 # before it terminates the connection.
 LoginRetries: 3
 
+########################################################################################
 # By default, only public key authentication is enabled. This is the most secure mode.
 # To authorize a user to login with their public key, install their key using the
 # OpenSSH authorized_keys file format in the authorized_users directory. Name the key
 # file with the user's username and no extension. Note: If you want to let a user have
 # many keys, you can append the keys to their file in authorized_users.
+########################################################################################
 
 # For less secure username and password based authentication, complete the sections below.
 
 # Type of hashing to use for the passwords below.
-# Options are: PLAIN (insecure), bcrypt, pbkdf, sha256
+# Options are: PLAIN (insecure), bcrypt, pbkdf2, sha256
+#
+# You can use the console/in-game command `/mkpasswd [hash] PASSWORD` to
+# generate a password hash string then copy it for your passwords below.
+# You can also use `/mkpasswd help` to see what algorithms are supported.
 PasswordType: bcrypt
 
 # Associate each username with a password hash (or the password if the PasswordType is set to PLAIN)

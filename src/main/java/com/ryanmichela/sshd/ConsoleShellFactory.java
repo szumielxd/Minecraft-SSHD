@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
@@ -137,6 +138,8 @@ public class ConsoleShellFactory implements ShellFactory {
 						this.ConsoleReader.clearScreen();
 						continue;
 					}
+					// Hide the mkpasswd command input.
+					Boolean mkpasswd = command.split(" ")[0].equals("mkpasswd");
 
 					Bukkit.getScheduler().runTask(
 						SshdPlugin.instance, () ->
@@ -148,8 +151,12 @@ public class ConsoleShellFactory implements ShellFactory {
 								Bukkit.dispatchCommand(this.SshdCommandSender, cmd);
 							}
 							else
-							{   
-								SshdPlugin.instance.getLogger().info("<" + this.Username + "> " + command);
+							{
+								if (!mkpasswd)
+								{
+									SshdPlugin.instance.getLogger().info("<" + this.Username + "> <" + (mkpasswd ? "True": "False") + "> " + command);
+									
+								}
 								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 							}
 						});

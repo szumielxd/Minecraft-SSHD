@@ -67,34 +67,40 @@ public class ConsoleLogFormatter extends Formatter {
         return result;
 	}
 
-    public String format(LogRecord logrecord) {
-        try {
-            Class.forName("org.bukkit.craftbukkit.command.ColouredConsoleSender");
-        } catch (ClassNotFoundException ignored) {
-            // MEANS WE'RE ON PAPER/TACO/OTHER SHIT
-            colorize(logrecord);
-        }
-        StringBuilder stringbuilder = new StringBuilder();
+  public
+	String format(LogRecord logrecord)
+	{
+		try
+		{
+			Class.forName("org.bukkit.craftbukkit.command.ColouredConsoleSender");
+		}
+		catch (ClassNotFoundException ignored)
+		{
+			// MEANS WE'RE ON PAPER/TACO/OTHER SHIT
+			colorize(logrecord);
+		}
+		StringBuilder stringbuilder = new StringBuilder();
 
-        stringbuilder.append(" [");
-        stringbuilder.append(this.dateFormat.format(logrecord.getMillis())).append(" ");
+		stringbuilder.append(" [");
+		stringbuilder.append(this.dateFormat.format(logrecord.getMillis())).append(" ");
 
-        stringbuilder.append(logrecord.getLevel().getName()).append("]: ");
-        stringbuilder.append(this.formatMessage(logrecord));
-        stringbuilder.append('\n');
-        Throwable throwable = logrecord.getThrown();
+		stringbuilder.append(logrecord.getLevel().getName()).append("]: ");
+		stringbuilder.append(this.formatMessage(logrecord));
+		stringbuilder.append('\n');
+		Throwable throwable = logrecord.getThrown();
 
-        if (throwable != null) {
-            StringWriter stringwriter = new StringWriter();
+		if (throwable != null)
+		{
+			StringWriter stringwriter = new StringWriter();
 
-            throwable.printStackTrace(new PrintWriter(stringwriter));
-            stringbuilder.append(stringwriter.toString());
-        }
+			throwable.printStackTrace(new PrintWriter(stringwriter));
+			stringbuilder.append(stringwriter.toString());
+		}
 
-        return stringbuilder.toString();
-    }
+		return stringbuilder.toString();
+	}
 
-    private void colorize(LogRecord logrecord) 
+	private void colorize(LogRecord logrecord) 
     {
 		String result = ColorizeString(logrecord.getMessage());
 		logrecord.setMessage(result);

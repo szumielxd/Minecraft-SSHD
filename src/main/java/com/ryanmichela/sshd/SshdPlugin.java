@@ -7,6 +7,7 @@ import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ryanmichela.sshd.ConsoleShellFactory;
+import com.ryanmichela.sshd.MkpasswdCommand;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +58,7 @@ class SshdPlugin extends JavaPlugin
 	{
 		instance = this;
 
+		// pls comment this shit so I know what it does.
 		sshd = SshServer.setUpDefaultServer();
 		sshd.setPort(getConfig().getInt("Port", 1025));
 		String host = getConfig().getString("ListenAddress", "all");
@@ -76,6 +78,8 @@ class SshdPlugin extends JavaPlugin
 			sshd.setFileSystemFactory(
 				new VirtualFileSystemFactory(FileSystems.getDefault().getPath(getDataFolder().getAbsolutePath()).getParent().getParent()));
 		}
+
+		this.getCommand("mkpasswd").setExecutor(new MkpasswdCommand());
 
 		sshd.setCommandFactory(new ConsoleCommandFactory());
 		try

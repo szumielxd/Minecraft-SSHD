@@ -60,6 +60,7 @@ public class PublicKeyAuthenticator implements PublickeyAuthenticator
 				if (this.FailCounts.get(username) >= tries)
 				{
 					this.FailCounts.put(username, 0);
+					SshdPlugin.instance.getLogger().info("Too many failures for " + username + ", disconnecting.");
 					session.close(true);
 				}
 
