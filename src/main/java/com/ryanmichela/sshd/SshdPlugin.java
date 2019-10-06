@@ -58,7 +58,6 @@ class SshdPlugin extends JavaPlugin
 	{
 		instance = this;
 
-		// pls comment this shit so I know what it does.
 		sshd = SshServer.setUpDefaultServer();
 		sshd.setPort(getConfig().getInt("Port", 1025));
 		String host = getConfig().getString("ListenAddress", "all");
