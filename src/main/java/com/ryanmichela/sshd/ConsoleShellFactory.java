@@ -138,7 +138,7 @@ public class ConsoleShellFactory implements ShellFactory {
 						this.ConsoleReader.clearScreen();
 						continue;
 					}
-					// Hide the mkpasswd command input.
+					// Hide the mkpasswd command input from other users.
 					Boolean mkpasswd = command.split(" ")[0].equals("mkpasswd");
 
 					Bukkit.getScheduler().runTask(
@@ -153,17 +153,12 @@ public class ConsoleShellFactory implements ShellFactory {
 							else
 							{
 								if (!mkpasswd)
-								{
-									SshdPlugin.instance.getLogger().info("<" + this.Username + "> <" + (mkpasswd ? "True": "False") + "> " + command);
+									SshdPlugin.instance.getLogger().info("<" + this.Username + "> " + command);
 									
-								}
 								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
 							}
 						});
 				}
-				// This should help stop one of the bugs where bytes are waiting to be written
-				// but the client fucked off already so the plugin throws an exception.
-				((Logger)LogManager.getRootLogger()).removeAppender(this.streamHandlerAppender);
 			}
 			catch (IOException e)
 			{

@@ -67,8 +67,7 @@ public class ConsoleLogFormatter extends Formatter {
         return result;
 	}
 
-  public
-	String format(LogRecord logrecord)
+  	public String format(LogRecord logrecord)
 	{
 		try
 		{

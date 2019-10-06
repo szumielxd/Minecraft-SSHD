@@ -39,7 +39,6 @@ class MkpasswdCommand implements CommandExecutor
                     // Dumb but whatever. Some people are really dense.
 					if (algoritm.equalsIgnoreCase("PLAIN"))
 					{
-						sender.sendMessage("Your hash: " + password);
 						// I mean c'mon...
 						sender.sendMessage("Bro really? it's literally your unencrypted password...");
 					}
