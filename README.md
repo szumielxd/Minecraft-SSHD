@@ -2,6 +2,8 @@ Spigot-SSHD
 ===========
 
 [![Build Status](https://travis-ci.org/Justasic/Spigot-SSHD.svg?branch=master)](https://travis-ci.org/Justasic/Spigot-SSHD)
+[![Release](https://img.shields.io/github/release/Justasic/Spigot-SSHD.svg?label=Release&maxAge=60)](https://github.com/Justasic/Spigot-SSHD/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/Justasic/Spigot-SSHD)](https://github.com/Justasic/Spigot-SSHD/blob/master/LICENSE)
 
 Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with SSHD.
 
@@ -25,6 +27,13 @@ SSHD securely exposes your Spigot admin console using the SSH protocol - the sam
 - You just want to access your server console using SSH.
 
 Note: By default, only public key authentication is enabled. This is the most secure authentication mode! Setting a username and password will make your server less secure.
+
+Screenshots
+============
+
+<img align="left" width="390" src="docs/console.png?raw=true" hspace="5" vspace="5" alt="console">
+<img width="400" src="docs/session.png?raw=true" alt="session"><br>
+
 
 Setting Up Public Key Authentication
 ====================================
@@ -83,6 +92,7 @@ mkpasswd supports the following hash algorithms:
 `sshd.mkpasswd` - Checks if the in-game user has access to run the mkpasswd command.
 
 SSHD uses cryptographic certificates or a secure username and password to verify remote access.
+
 
 ## Source Code
 [Get the source on GitHub](https://github.com/Justasic/Spigot-SSHD "Source Code")
