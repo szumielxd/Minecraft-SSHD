@@ -5,9 +5,11 @@ Spigot-SSHD
 [![Release](https://img.shields.io/github/release/Justasic/Spigot-SSHD.svg?label=Release&maxAge=60)](https://github.com/Justasic/Spigot-SSHD/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Justasic/Spigot-SSHD)](https://github.com/Justasic/Spigot-SSHD/blob/master/LICENSE)
 
-Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with SSHD.
+<img align="left" width="140" height="140" src="docs/ssh_logo.png?raw=true" hspace="5" vspace="5" alt="diskover"><br/>
 
-SSHD securely exposes your Spigot admin console using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.
+**Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with SSHD.**
+
+SSHD securely exposes your BungeeCord admin console and the server filesystem using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.<br/>
 
 - Compatible with all ssh clients, regardless of operating system.
 - Remotely view your server log in real-time.
