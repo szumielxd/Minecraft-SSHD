@@ -6,8 +6,9 @@
 
     <groupId>com.ryanmichela</groupId>
     <artifactId>sshd</artifactId>
-    <version>1.3.6.1</version>
-    <url>https://github.com/Justasic/Bukkit-SSHD/</url>
+    <description>Minecraft-SSHD: The SSH daemon for Minecraft servers.</description>
+    <version>1.3.7</version>
+    <url>https://github.com/Justasic/Minecraft-SSHD/</url>
 
     <properties>
         <java.version>1.8</java.version>

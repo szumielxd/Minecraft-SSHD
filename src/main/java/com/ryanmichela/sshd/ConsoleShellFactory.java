@@ -136,6 +136,8 @@ public class ConsoleShellFactory implements ShellFactory {
 					if (command.equals("cls"))
 					{
 						this.ConsoleReader.clearScreen();
+						this.ConsoleReader.drawLine();
+						this.ConsoleReader.flush();
 						continue;
 					}
 					// Hide the mkpasswd command input from other users.
@@ -152,10 +154,18 @@ public class ConsoleShellFactory implements ShellFactory {
 							}
 							else
 							{
+								// Don't send our mkpasswd command output. This will echo passwords back
+								// to the console for all to see. This command is strictly between
+								// our plugin and the connected client.
 								if (!mkpasswd)
+								{
 									SshdPlugin.instance.getLogger().info("<" + this.Username + "> " + command);
-									
-								Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+									Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+								}
+								else
+								{
+									Bukkit.dispatchCommand(this.SshdCommandSender, command);
+								}
 							}
 						});
 				}

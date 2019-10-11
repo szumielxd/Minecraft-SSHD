@@ -12,9 +12,28 @@ import com.ryanmichela.sshd.SshdPlugin;
 
 class MkpasswdCommand implements CommandExecutor
 {
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+	// Because Spigot's failed syntax API is really less than ideal (you should be required to add a
+	// SendSyntax function override), we're just always going to return true even for syntax failures
+	// as we will handle the syntax message internally. This also lets us send the messages more
+	// securely to the client without people knowing we're using the command. This prevents password
+	// or hash leakages from the user to other connected users. Plus this syntax will show how
+	// to both use the command and what hashes we support which is important for people who don't
+	// know how to RTFM. - Justin
+	private void SendSyntax(CommandSender sender, boolean invalid)
 	{
+		if (invalid)
+			sender.sendMessage("\u00A7cInvalid Syntax\u00A7r");
+		sender.sendMessage("\u00A7a/mkpasswd <help|hash> <password>\u00A7r");
+		sender.sendMessage("\u00A79Supported Hashes: SHA256, PBKDF2, BCRYPT, PLAIN\u00A7r");
+	}
+
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
+	{
+		// If we're not mkpasswd, just fuck off.
+		if (!label.equalsIgnoreCase("mkpasswd"))
+			return false;
+
 		String algoritm, password;
 		try
 		{
@@ -22,78 +41,52 @@ class MkpasswdCommand implements CommandExecutor
 			// spaces in their passwords otherwise it won't be as strong as it should be.
 			algoritm = args[0];
 			password = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+			if (password.trim().isEmpty()) // Shortcut to the catch statement below.
+				throw new ArrayIndexOutOfBoundsException();
 		}
 		catch (ArrayIndexOutOfBoundsException e)
 		{
 			// ignore it.
-			return false;
+			this.SendSyntax(sender, true);
+			return true;
 		}
 
-		// If they're console, allow regardless.
-        if (!(sender instanceof Player))
-		{
-			if (label.equalsIgnoreCase("mkpasswd"))
+		boolean hasperm = (sender instanceof Player) ? ((Player)sender).hasPermission("sshd.mkpasswd") : true;
+
+		if (hasperm)
+		{ 
+			try
 			{
-				try
+				String hash = "";
+				// Dumb but whatever. Some people are really dense.
+				if (algoritm.equalsIgnoreCase("PLAIN"))
 				{
-                    // Dumb but whatever. Some people are really dense.
-					if (algoritm.equalsIgnoreCase("PLAIN"))
-					{
-						// I mean c'mon...
-						sender.sendMessage("Bro really? it's literally your unencrypted password...");
-					}
-                    else if (algoritm.equalsIgnoreCase("pbkdf2"))
-						sender.sendMessage("Your hash: " + Cryptography.PBKDF2_HashPassword(password));
-					else if (algoritm.equalsIgnoreCase("bcrypt"))
-						sender.sendMessage("Your hash: " + Cryptography.BCrypt_HashPassword(password));
-					else if (algoritm.equalsIgnoreCase("sha256"))
-						sender.sendMessage("Your hash: " + Cryptography.SHA256_HashPassword(password));
-					else if (algoritm.equalsIgnoreCase("help"))
-						sender.sendMessage("Supported hash algorithms: pbkdf2, bcrypt, sha256, plain");
-					else
-						return false;
+					// I mean c'mon...
+					sender.sendMessage("Bro really? it's literally your unencrypted password...");
+					return true;
 				}
-				catch (Exception e)
+				else if (algoritm.equalsIgnoreCase("pbkdf2"))
+					hash = Cryptography.PBKDF2_HashPassword(password);
+				else if (algoritm.equalsIgnoreCase("bcrypt"))
+					hash = Cryptography.BCrypt_HashPassword(password);
+				else if (algoritm.equalsIgnoreCase("sha256"))
+					hash = Cryptography.SHA256_HashPassword(password);
+				else
 				{
-					// We're console, just print the stack trace.
-					e.printStackTrace();
-					return false;
+					this.SendSyntax(sender, !algoritm.equalsIgnoreCase("help"));
+					return true;
 				}
-				return true;
+
+				sender.sendMessage("\u00A79Your Hash: " + hash + "\u00A7r");
+			}
+			catch (Exception e)
+			{
+				// We're console, just print the stack trace.
+				e.printStackTrace();
+				sender.sendMessage("\u00A7cAn error occured. Please check console for details.\u00A7r");
 			}
 		}
-        else
-        {
-            Player player = (Player) sender;
-            if (label.equalsIgnoreCase("mkpasswd"))
-			{
-				try 
-				{
-					if (player.hasPermission("sshd.mkpasswd"))
-					{
-						// Dumb but whatever. Some people are really dense.
-						if (algoritm.equalsIgnoreCase("PLAIN"))
-							sender.sendMessage(password);
-						else if (algoritm.equalsIgnoreCase("pbkdf2"))
-							sender.sendMessage(Cryptography.PBKDF2_HashPassword(password));
-						else if (algoritm.equalsIgnoreCase("bcrypt"))
-							sender.sendMessage(Cryptography.BCrypt_HashPassword(password));
-						else if (algoritm.equalsIgnoreCase("sha256"))
-							sender.sendMessage(Cryptography.SHA256_HashPassword(password));
-						else
-							return false;
-					}
-				}
-				catch (Exception e)
-				{
-					// since this is a player, send a failure message
-					sender.sendMessage("An error occured, please check console.");
-					e.printStackTrace();
-					return false;
-				}
-				return true;
-            }
-		}
-		return false;
-    }
+
+		return true;
+	}
 }

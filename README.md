@@ -1,15 +1,15 @@
-Spigot-SSHD
+Minecraft-SSHD
 ===========
 
-[![Build Status](https://travis-ci.org/Justasic/Spigot-SSHD.svg?branch=master)](https://travis-ci.org/Justasic/Spigot-SSHD)
-[![Release](https://img.shields.io/github/release/Justasic/Spigot-SSHD.svg?label=Release&maxAge=60)](https://github.com/Justasic/Spigot-SSHD/releases/latest)
-[![GitHub license](https://img.shields.io/github/license/Justasic/Spigot-SSHD)](https://github.com/Justasic/Spigot-SSHD/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/Justasic/Minecraft-SSHD.svg?branch=master)](https://travis-ci.org/Justasic/Minecraft-SSHD)
+[![Release](https://img.shields.io/github/release/Justasic/Minecraft-SSHD.svg?label=Release&maxAge=60)](https://github.com/Justasic/Minecraft-SSHD/releases/latest)
+[![GitHub license](https://img.shields.io/github/license/Justasic/Minecraft-SSHD)](https://github.com/Justasic/Minecraft-SSHD/blob/master/LICENSE)
 
 <img align="left" width="140" height="140" src="docs/ssh_logo.png?raw=true" hspace="5" vspace="5" alt="diskover"><br/>
 
-**Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with SSHD.**
+**Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with Minecraft-SSHD!**
 
-SSHD securely exposes your BungeeCord admin console and the server filesystem using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.<br/>
+Minecraft-SSHD securely exposes your BungeeCord admin console and the server filesystem using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.<br/>
 
 - Compatible with all ssh clients, regardless of operating system.
 - Remotely view your server log in real-time.
@@ -20,7 +20,7 @@ SSHD securely exposes your BungeeCord admin console and the server filesystem us
 - Run Spigot without using screen or tmux (by adding `-noconsole`)
 - Remotely script your server by issuing one-off console commands with ssh.
 
-### Why should I use SSHD?
+### Why should I use Minecraft-SSHD?
 
 - You are in a shared hosting environment that only gives you access to the - log files.
 - You want to share access to your server console, but don't want to give anybody access to the machine its running on.
@@ -93,8 +93,8 @@ mkpasswd supports the following hash algorithms:
 
 `sshd.mkpasswd` - Checks if the in-game user has access to run the mkpasswd command.
 
-SSHD uses cryptographic certificates or a secure username and password to verify remote access.
+Minecraft-SSHD uses cryptographic certificates or a secure username and password to verify remote access.
 
 
 ## Source Code
-[Get the source on GitHub](https://github.com/Justasic/Spigot-SSHD "Source Code")
+[Get the source on GitHub](https://github.com/Justasic/Minecraft-SSHD "Source Code")

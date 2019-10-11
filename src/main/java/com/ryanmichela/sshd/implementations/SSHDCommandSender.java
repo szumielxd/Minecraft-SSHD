@@ -16,21 +16,23 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 import com.ryanmichela.sshd.ConsoleShellFactory;
+import com.ryanmichela.sshd.ConsoleLogFormatter;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.logging.Level;
 
-public class SSHDCommandSender implements ConsoleCommandSender, CommandSender {
-
+public class SSHDCommandSender implements ConsoleCommandSender, CommandSender
+{
 	private final PermissibleBase perm = new PermissibleBase(this);
 	private final SSHDConversationTracker conversationTracker = new SSHDConversationTracker();
 	// Set by the upstream allocating function
 	public ConsoleShellFactory.ConsoleShell console;
 
-	public void sendMessage(String message) {
-		this.sendRawMessage(message);
+	public void sendMessage(String message) 
+	{
+		this.sendRawMessage(message + "\r");
 	}
 
 	public void sendRawMessage(String message) 
@@ -40,7 +42,18 @@ public class SSHDCommandSender implements ConsoleCommandSender, CommandSender {
 			return;
 		try 
 		{
-			this.console.ConsoleReader.println(ChatColor.stripColor(message));
+			this.console.ConsoleReader.println(ConsoleLogFormatter.ColorizeString(message).replace("\n", "\n\r"));
+			this.console.ConsoleReader.print(this.console.ConsoleReader.RESET_LINE + "");
+            this.console.ConsoleReader.flush();
+            try 
+            {
+                this.console.ConsoleReader.drawLine();
+            }
+             catch (Throwable ex) 
+            {
+                this.console.ConsoleReader.getCursorBuffer().clear();
+            }
+            this.console.ConsoleReader.flush();
 		} 
 		catch (IOException e) 
 		{
