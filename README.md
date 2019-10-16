@@ -9,7 +9,7 @@ Minecraft-SSHD
 
 **Have you ever wished you could remotely access your server's admin console without having to setup a complex remote access system? Now you can with Minecraft-SSHD!**
 
-Minecraft-SSHD securely exposes your BungeeCord admin console and the server filesystem using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.<br/>
+Minecraft-SSHD securely exposes your Minecraft admin console and the server filesystem using the SSH protocol - the same protocol that serves as the secure foundation for nearly all remote server administration.<br/>
 
 - Compatible with all ssh clients, regardless of operating system.
 - Remotely view your server log in real-time.
