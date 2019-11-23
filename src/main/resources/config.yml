@@ -37,5 +37,34 @@ PasswordType: bcrypt
 
 # Associate each username with a password hash (or the password if the PasswordType is set to PLAIN)
 Credentials:
-#    user1: password1
-#    user2: password2
+     # Username (should match SSH key if using key-based authentication)
+     justasic:
+        # Password hash from /mkpasswd command
+        password: $2a$10$Oqk83FrypRrMF35EDeoQDuidJOQEWBE0joEQ7MJFi/Oeg26wQ3fm2
+        # Whether they can read, write, or have read/write permissions to console.
+        console: RW
+        # SFTP access for this user.
+        sftp:
+          # Whether SFTP is enabled for this user.
+          enabled: true
+          # Whether to deny by default or allow by default
+          default: allow
+          # Rules regarding their SFTP access.
+          # These rules are relative to the server root.
+          # This acts as a chroot for the server root.
+          # Each path can be an absolute path or a regular expression.
+          rules:
+            "/path/to/file":
+                # Whether the user can read the file over SFTP
+                readable: true
+                # Whether the user can write/modify the file over SFTP
+                writeable: true
+            "/path/to/regex/*":
+                readable: true
+                writeable: false
+            "/path/to/directory/":
+                readable: false
+                writeable: true
+            "/another/example/path":
+                readable: false
+                writeable: false

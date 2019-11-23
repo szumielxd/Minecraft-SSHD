@@ -20,7 +20,7 @@ public class ConfigPasswordAuthenticator implements PasswordAuthenticator {
 	{
 		// Depending on our hash type, we have to try and figure out what we're doing.
 		String HashType = SshdPlugin.instance.getConfig().getString("PasswordType");
-		String ConfigHash = SshdPlugin.instance.getConfig().getString("Credentials." + username.trim());
+		String ConfigHash = SshdPlugin.instance.getConfig().getString("Credentials." + username.trim() + ".password");
 
 		if (ConfigHash == null)
 			SshdPlugin.instance.getLogger().warning("Config has no such user: " + username);

@@ -1,9 +1,13 @@
 package com.ryanmichela.sshd;
 
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
+import org.apache.sshd.common.session.helpers.AbstractSession;
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.keyprovider.SimpleGeneratorHostKeyProvider;
+import org.apache.sshd.server.session.ServerSession;
 import org.apache.sshd.server.subsystem.sftp.SftpSubsystemFactory;
+import org.apache.sshd.server.subsystem.sftp.SimpleAccessControlSftpEventListener;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.ryanmichela.sshd.ConsoleShellFactory;
@@ -14,18 +18,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 /**
  * Copyright 2013 Ryan Michela
  */
-public
-class SshdPlugin extends JavaPlugin
+public class SshdPlugin extends JavaPlugin
 {
+	private SshServer sshd;
+	public static SshdPlugin instance;
 
-  private SshServer sshd;
-  public static SshdPlugin instance;
+	public static List<ConfigurationSection> GetSections(ConfigurationSection source) 
+	{
+		if (source == null)
+			return null;
+
+		List<ConfigurationSection> nodes = new ArrayList<ConfigurationSection>();
+		for (String key : source.getKeys(false)) 
+		{
+			if (source.isConfigurationSection(key)) 
+				nodes.add(source.getConfigurationSection(key));
+		}
+		return nodes;
+	}
 
 	@Override public void onLoad()
 	{
@@ -73,9 +94,90 @@ class SshdPlugin extends JavaPlugin
 
 		if (getConfig().getBoolean("EnableSFTP"))
 		{
-			sshd.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
-			sshd.setFileSystemFactory(
-				new VirtualFileSystemFactory(FileSystems.getDefault().getPath(getDataFolder().getAbsolutePath()).getParent().getParent()));
+			// Handle access control for SFTP.
+			SftpSubsystemFactory.Builder builder = new SftpSubsystemFactory.Builder();
+			builder.addSftpEventListener(new SimpleAccessControlSftpEventListener() {
+				protected boolean isAccessAllowed(ServerSession session, String remote, Path localpath)
+				{
+					try
+					{
+						ConfigurationSection UsernameNamespace = getConfig().getConfigurationSection("Credentials." + session.getUsername() + ".sftp");
+
+						// They don't have SFTP enabled so deny them.
+						if (UsernameNamespace == null || !UsernameNamespace.getBoolean("enabled"))
+							return false;
+
+						
+						List<ConfigurationSection> rules = GetSections(UsernameNamespace.getConfigurationSection("rules"));
+						if (rules != null)
+						{
+							for (ConfigurationSection path : rules)
+							{
+								// Check if the requesting path matches
+								if (localpath.toString().matches(path.getName()))
+								{
+									// Check if they have read permissions
+									if (path.getBoolean("readable"))
+										return true;
+
+									getLogger().info(String.format("Denied %s read access to \"%s\" matching rule \"%s\"", session.getUsername(), localpath.toString(), path.getName()));
+									return false;
+								}
+							}
+						}
+
+						return UsernameNamespace.getString("default").equalsIgnoreCase("allow");
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						// Automatically deny.
+						return false;
+					}
+				}
+
+				protected boolean isModificationAllowed(ServerSession session, String remote, Path localpath)
+				{
+					try
+					{
+						ConfigurationSection UsernameNamespace = getConfig().getConfigurationSection("Credentials." + session.getUsername() + ".sftp");
+
+						// They don't have SFTP enabled so deny them.
+						if (UsernameNamespace == null || !UsernameNamespace.getBoolean("enabled"))
+							return false;
+
+						// Check a list of files against a path trying to be accessed.
+						List<ConfigurationSection> rules = GetSections(UsernameNamespace.getConfigurationSection("rules"));
+						if (rules != null)
+						{
+							for (ConfigurationSection path : rules)
+							{
+								// Check if the requesting path matches
+								if (localpath.toString().matches(path.getName()))
+								{
+									// Check if they have read permissions
+									if (path.getBoolean("writeable"))
+										return true;
+
+									getLogger().info(String.format("Denied %s modifications to \"%s\" matching rule \"%s\"", session.getUsername(), localpath.toString(), path.getName()));
+									return false;
+								}
+							}
+						}
+
+						return UsernameNamespace.getString("default").equalsIgnoreCase("allow");
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						// Automatically deny.
+						return false;
+					}
+				}
+			});
+
+			sshd.setSubsystemFactories(Collections.singletonList(builder.build()));
+			sshd.setFileSystemFactory(new VirtualFileSystemFactory(FileSystems.getDefault().getPath(getDataFolder().getAbsolutePath()).getParent().getParent()));
 		}
 
 		this.getCommand("mkpasswd").setExecutor(new MkpasswdCommand());
@@ -95,11 +197,16 @@ class SshdPlugin extends JavaPlugin
 	{
 		try
 		{
-			sshd.stop();
+			// Terminate any active sessions
+			for (AbstractSession as : sshd.getActiveSessions())
+				as.close(true);
+			// Pass "true" to stop immediately!
+			sshd.stop(true);
 		}
 		catch (Exception e)
 		{
 			// do nothing
+			e.printStackTrace();
 		}
 	}
 }
