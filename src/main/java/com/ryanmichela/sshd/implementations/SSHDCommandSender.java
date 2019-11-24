@@ -61,91 +61,113 @@ public class SSHDCommandSender implements ConsoleCommandSender, CommandSender
 		}
 	}
 
-	public void sendMessage(String[] messages) {
+	public void sendMessage(String[] messages) 
+	{
 		Arrays.asList(messages).forEach(this::sendMessage);
 	}
 
-	public String getName() {
+	public String getName() 
+	{
 		return "SSHD Console";
 	}
 
-	public boolean isOp() {
+	public boolean isOp() 
+	{
 		return true;
 	}
 
-	public void setOp(boolean value) {
+	public void setOp(boolean value) 
+	{
 		throw new UnsupportedOperationException("Cannot change operator status of server console");
 	}
 
-	public boolean beginConversation(Conversation conversation) {
+	public boolean beginConversation(Conversation conversation) 
+	{
 		return this.conversationTracker.beginConversation(conversation);
 	}
 
-	public void abandonConversation(Conversation conversation) {
+	public void abandonConversation(Conversation conversation) 
+	{
 		this.conversationTracker.abandonConversation(conversation, new ConversationAbandonedEvent(conversation, new ManuallyAbandonedConversationCanceller()));
 	}
 
-	public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) {
+	public void abandonConversation(Conversation conversation, ConversationAbandonedEvent details) 
+	{
 		this.conversationTracker.abandonConversation(conversation, details);
 	}
 
-	public void acceptConversationInput(String input) {
+	public void acceptConversationInput(String input) 
+	{
 		this.conversationTracker.acceptConversationInput(input);
 	}
 
-	public boolean isConversing() {
+	public boolean isConversing() 
+	{
 		return this.conversationTracker.isConversing();
 	}
 
-	public boolean isPermissionSet(String name) {
+	public boolean isPermissionSet(String name) 
+	{
 		return this.perm.isPermissionSet(name);
 	}
 
-	public boolean isPermissionSet(Permission perm) {
+	public boolean isPermissionSet(Permission perm) 
+	{
 		return this.perm.isPermissionSet(perm);
 	}
 
-	public boolean hasPermission(String name) {
+	public boolean hasPermission(String name) 
+	{
 		return this.perm.hasPermission(name);
 	}
 
-	public boolean hasPermission(Permission perm) {
+	public boolean hasPermission(Permission perm) 
+	{
 		return this.perm.hasPermission(perm);
 	}
 
-	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) {
+	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value) 
+	{
 		return this.perm.addAttachment(plugin, name, value);
 	}
 
-	public PermissionAttachment addAttachment(Plugin plugin) {
+	public PermissionAttachment addAttachment(Plugin plugin) 
+	{
 		return this.perm.addAttachment(plugin);
 	}
 
-	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) {
+	public PermissionAttachment addAttachment(Plugin plugin, String name, boolean value, int ticks) 
+	{
 		return this.perm.addAttachment(plugin, name, value, ticks);
 	}
 
-	public PermissionAttachment addAttachment(Plugin plugin, int ticks) {
+	public PermissionAttachment addAttachment(Plugin plugin, int ticks) 
+	{
 		return this.perm.addAttachment(plugin, ticks);
 	}
 
-	public void removeAttachment(PermissionAttachment attachment) {
+	public void removeAttachment(PermissionAttachment attachment) 
+	{
 		this.perm.removeAttachment(attachment);
 	}
 
-	public void recalculatePermissions() {
+	public void recalculatePermissions() 
+	{
 		this.perm.recalculatePermissions();
 	}
 
-	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
+	public Set<PermissionAttachmentInfo> getEffectivePermissions() 
+	{
 		return this.perm.getEffectivePermissions();
 	}
 
-	public boolean isPlayer() {
+	public boolean isPlayer() 
+	{
 		return false;
 	}
 
-	public Server getServer() {
+	public Server getServer() 
+	{
 		return Bukkit.getServer();
 	}
 

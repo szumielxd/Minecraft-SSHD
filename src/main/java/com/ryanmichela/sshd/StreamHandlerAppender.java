@@ -13,80 +13,88 @@ import java.util.logging.StreamHandler;
 /**
  * Copyright 2014 Ryan Michela
  */
-public class StreamHandlerAppender implements Appender {
+public class StreamHandlerAppender implements Appender 
+{
 
     private StreamHandler streamHandler;
     private UUID uuid;
 
-    public StreamHandlerAppender(StreamHandler streamHandler) {
+    public StreamHandlerAppender(StreamHandler streamHandler) 
+    {
         this.streamHandler = streamHandler;
         uuid = UUID.randomUUID();
     }
 
     @Override
-    public void append(LogEvent logEvent) {
+    public void append(LogEvent logEvent) 
+    {
         java.util.logging.Level level;
 
-        if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.DEBUG)) {
+        if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.DEBUG))
             level = java.util.logging.Level.FINE;
-        } else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.INFO)) {
+        else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.INFO))
             level = java.util.logging.Level.INFO;
-        } else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.WARN)) {
+        else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.WARN))
             level = java.util.logging.Level.WARNING;
-        } else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.ERROR)) {
+        else if (logEvent.getLevel().equals(org.apache.logging.log4j.Level.ERROR))
             level = java.util.logging.Level.SEVERE;
-        } else {
+        else
             level = java.util.logging.Level.INFO;
-        }
+    
+
         String message = logEvent.getMessage().getFormattedMessage();
-
-
         LogRecord logRecord = new LogRecord(level, message);
         streamHandler.publish(logRecord);
     }
 
     @Override
-    public String getName() {
+    public String getName() 
+    {
         return "StreamHandlerAppender:" + uuid.toString();
     }
 
     @Override
-    public Layout<? extends Serializable> getLayout() {
+    public Layout<? extends Serializable> getLayout() 
+    {
         return null;
     }
 
     @Override
-    public boolean ignoreExceptions() {
+    public boolean ignoreExceptions() 
+    {
         return false;
     }
 
     @Override
-    public ErrorHandler getHandler() {
+    public ErrorHandler getHandler() 
+    {
         return null;
     }
 
     @Override
-    public void setHandler(ErrorHandler errorHandler) {
-
+    public void setHandler(ErrorHandler errorHandler) 
+    {
     }
 
     @Override
-    public void start() {
-
+    public void start() 
+    {
     }
 
     @Override
-    public void stop() {
-
+    public void stop() 
+    {
     }
 
     @Override
-    public boolean isStarted() {
+    public boolean isStarted() 
+    {
         return true;
     }
 
     @Override
-    public boolean isStopped() {
+    public boolean isStopped() 
+    {
         return false;
     }
 }

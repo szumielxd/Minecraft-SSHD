@@ -11,8 +11,8 @@ import java.util.Map;
 /**
  * Copyright 2013 Ryan Michela
  */
-public class ConfigPasswordAuthenticator implements PasswordAuthenticator {
-
+public class ConfigPasswordAuthenticator implements PasswordAuthenticator
+{
 	private Map<String, Integer> FailCounts = new HashMap<String, Integer>();
 
 	@Override

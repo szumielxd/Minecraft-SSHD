@@ -10,39 +10,51 @@ import java.util.logging.*;
 /**
  * Copyright 2013 Ryan Michela
  */
-public class FlushyStreamHandler extends StreamHandler {
-
+public class FlushyStreamHandler extends StreamHandler 
+{
     private ConsoleReader reader;
 
-    public FlushyStreamHandler(OutputStream out, Formatter formatter, ConsoleReader reader) {
+    public FlushyStreamHandler(OutputStream out, Formatter formatter, ConsoleReader reader) 
+    {
         super(out, formatter);
         this.reader = reader;
         setLevel(Level.INFO);
     }
 
     @Override
-    public synchronized void publish(LogRecord record) {
+    public synchronized void publish(LogRecord record) 
+    {
         record.setMessage(record.getMessage().replace("\n", "\n\r"));
         super.publish(record);
         flush();
     }
 
     @Override
-    public synchronized void flush() {
-        try {
+    public synchronized void flush() 
+    {
+        try 
+        {
             reader.print(ConsoleReader.RESET_LINE + "");
             reader.flush();
             super.flush();
-            try {
+            try 
+            {
                 reader.drawLine();
-            } catch (Throwable ex) {
+            } 
+            catch (Throwable ex) 
+            {
                 reader.getCursorBuffer().clear();
             }
+
             reader.flush();
             super.flush();
-        } catch (SshException ex) {
+        }
+        catch (SshException ex)
+        {
             // do nothing
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) 
+        {
             Logger.getLogger(FlushyStreamHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

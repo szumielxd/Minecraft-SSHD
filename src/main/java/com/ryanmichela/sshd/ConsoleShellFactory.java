@@ -32,13 +32,16 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
-public class ConsoleShellFactory implements ShellFactory {
+public class ConsoleShellFactory implements ShellFactory 
+{
 
-	public Command createShell(ChannelSession cs) {
+	public Command createShell(ChannelSession cs) 
+	{
 		return new ConsoleShell();
 	}
 
-	public class ConsoleShell implements Command, Runnable {
+	public class ConsoleShell implements Command, Runnable 
+	{
 
 		private InputStream in;
 		private OutputStream out;
@@ -52,35 +55,43 @@ public class ConsoleShellFactory implements ShellFactory {
 		public ConsoleReader ConsoleReader;
 		public SSHDCommandSender SshdCommandSender;
 
-		public InputStream getIn() {
+		public InputStream getIn() 
+		{
 			return in;
 		}
 
-		public OutputStream getOut() {
+		public OutputStream getOut() 
+		{
 			return out;
 		}
 
-		public OutputStream getErr() {
+		public OutputStream getErr() 
+		{
 			return err;
 		}
 
-		public Environment getEnvironment() {
+		public Environment getEnvironment() 
+		{
 			return environment;
 		}
 
-		public void setInputStream(InputStream in) {
+		public void setInputStream(InputStream in) 
+		{
 			this.in = in;
 		}
 
-		public void setOutputStream(OutputStream out) {
+		public void setOutputStream(OutputStream out) 
+		{
 			this.out = out;
 		}
 
-		public void setErrorStream(OutputStream err) {
+		public void setErrorStream(OutputStream err) 
+		{
 			this.err = err;
 		}
 
-		public void setExitCallback(ExitCallback callback) {
+		public void setExitCallback(ExitCallback callback) 
+		{
 			this.callback = callback;
 		}
 
