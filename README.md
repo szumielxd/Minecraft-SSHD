@@ -98,3 +98,6 @@ Minecraft-SSHD uses cryptographic certificates or a secure username and password
 
 ## Source Code
 [Get the source on GitHub](https://github.com/Justasic/Minecraft-SSHD "Source Code")
+
+## Our Discord
+https://discord.gg/DtrJFn
