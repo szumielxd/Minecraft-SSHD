@@ -20,7 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.List;
+import java.util.List; 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
@@ -92,11 +92,12 @@ public class SshdPlugin extends JavaPlugin
 		sshd.setPasswordAuthenticator(new ConfigPasswordAuthenticator());
 		sshd.setPublickeyAuthenticator(new PublicKeyAuthenticator(authorizedKeys));
 
-		if (getConfig().getBoolean("EnableSFTP"))
+		if (getConfig().getBoolean("EnableSFTP", false))
 		{
 			// Handle access control for SFTP.
 			SftpSubsystemFactory.Builder builder = new SftpSubsystemFactory.Builder();
-			builder.addSftpEventListener(new SimpleAccessControlSftpEventListener() {
+			builder.addSftpEventListener(new SimpleAccessControlSftpEventListener() 
+			{
 				protected boolean isAccessAllowed(ServerSession session, String remote, Path localpath)
 				{
 					try
@@ -140,10 +141,11 @@ public class SshdPlugin extends JavaPlugin
 				{
 					try
 					{
+						boolean defaultbool = getConfig().getBoolean("Credentials.$default.sftp.enabled", false);
 						ConfigurationSection UsernameNamespace = getConfig().getConfigurationSection("Credentials." + session.getUsername() + ".sftp");
 
 						// They don't have SFTP enabled so deny them.
-						if (UsernameNamespace == null || !UsernameNamespace.getBoolean("enabled"))
+						if (UsernameNamespace == null || !UsernameNamespace.getBoolean("enabled", defaultbool))
 							return false;
 
 						// Check a list of files against a path trying to be accessed.
@@ -165,7 +167,7 @@ public class SshdPlugin extends JavaPlugin
 							}
 						}
 
-						return UsernameNamespace.getString("default").equalsIgnoreCase("allow");
+						return UsernameNamespace.getString("default", "deny").equalsIgnoreCase("allow");
 					}
 					catch (Exception e)
 					{

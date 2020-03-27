@@ -171,4 +171,8 @@ public class SSHDCommandSender implements ConsoleCommandSender, CommandSender
 		return Bukkit.getServer();
 	}
 
+	public CommandSender.Spigot spigot()
+	{
+		return ((CommandSender)this).spigot();
+	}
 }

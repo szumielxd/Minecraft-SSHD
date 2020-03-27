@@ -27,7 +27,7 @@ public class PublicKeyAuthenticator implements PublickeyAuthenticator
 	{
 		byte[] keyBytes = key.getEncoded();
 		File keyFile 	= new File(authorizedKeysDir, username);
-		Integer tries   = SshdPlugin.instance.getConfig().getInt("LoginRetries");
+		Integer tries   = SshdPlugin.instance.getConfig().getInt("LoginRetries", 3);
 
 		if (keyFile.exists())
 		{
@@ -68,7 +68,8 @@ public class PublicKeyAuthenticator implements PublickeyAuthenticator
 			}
 			catch (Exception e)
 			{
-				SshdPlugin.instance.getLogger().severe("Failed to process public key " + keyFile.getAbsolutePath() + " " + e.getMessage());
+				e.printStackTrace();
+				SshdPlugin.instance.getLogger().severe("Failed to process public key " + keyFile.getAbsolutePath());
 			}
 		}
 		else

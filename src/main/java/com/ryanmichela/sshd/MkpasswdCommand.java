@@ -7,6 +7,11 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import com.ryanmichela.sshd.Cryptography;
 import com.ryanmichela.sshd.SshdPlugin;
 
@@ -30,10 +35,6 @@ class MkpasswdCommand implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
 	{
-		// If we're not mkpasswd, just fuck off.
-		if (!label.equalsIgnoreCase("mkpasswd"))
-			return false;
-
 		String algoritm, password;
 		try
 		{
@@ -77,7 +78,11 @@ class MkpasswdCommand implements CommandExecutor
 					return true;
 				}
 
-				sender.sendMessage("\u00A79Your Hash: " + hash + "\u00A7r");
+				TextComponent msg = new TextComponent("\u00A79Your Hash: " + hash + "\u00A7r");
+				msg.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, hash));
+				msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to copy the hash!").create()));
+
+				sender.spigot().sendMessage(msg);
 			}
 			catch (Exception e)
 			{
@@ -86,6 +91,8 @@ class MkpasswdCommand implements CommandExecutor
 				sender.sendMessage("\u00A7cAn error occured. Please check console for details.\u00A7r");
 			}
 		}
+		else
+			sender.sendMessage("\u00A7cPermission Denied.\u00A7r");
 
 		return true;
 	}

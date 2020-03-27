@@ -70,7 +70,7 @@ public class ConfigPasswordAuthenticator implements PasswordAuthenticator
 		}
 
 		SshdPlugin.instance.getLogger().info("Failed login for " + username + " using " + HashType + "-based password authentication.");
-		Integer tries = SshdPlugin.instance.getConfig().getInt("LoginRetries");
+		Integer tries = SshdPlugin.instance.getConfig().getInt("LoginRetries", 3);
 
 		try
 		{

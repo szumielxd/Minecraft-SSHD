@@ -2,13 +2,13 @@ package com.ryanmichela.sshd;
 
 import com.ryanmichela.sshd.ConsoleCommandCompleter;
 import com.ryanmichela.sshd.ConsoleLogFormatter;
+import com.ryanmichela.sshd.PermissionUtil;
 import com.ryanmichela.sshd.FlushyOutputStream;
 import com.ryanmichela.sshd.FlushyStreamHandler;
 import com.ryanmichela.sshd.SshTerminal;
 import com.ryanmichela.sshd.SshdPlugin;
 import com.ryanmichela.sshd.StreamHandlerAppender;
 import com.ryanmichela.sshd.implementations.SSHDCommandSender;
-import com.ryanmichela.sshd.ConsoleLogFormatter;
 import jline.console.ConsoleReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.util.StringTokenizer;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
@@ -100,6 +101,17 @@ public class ConsoleShellFactory implements ShellFactory
 		{
 			try
 			{
+				String username = env.getEnv().get(Environment.ENV_USER);
+				Optional<String> optcred = PermissionUtil.GetCredential(username, "console");
+				// They don't have access.
+				if (optcred.isPresent() && !optcred.get().contains("R"))
+				{
+					cs.close(true);
+					return;
+				}
+				else
+					SshdPlugin.instance.getLogger().warning("There is no $default pseudo-user under credential, allowing unrestricted access...");
+
 				this.ConsoleReader = new ConsoleReader(in, new FlushyOutputStream(out), new SshTerminal());
 				this.ConsoleReader.setExpandEvents(true);
 				this.ConsoleReader.addCompleter(new ConsoleCommandCompleter());
@@ -110,14 +122,15 @@ public class ConsoleShellFactory implements ShellFactory
 				((Logger)LogManager.getRootLogger()).addAppender(this.streamHandlerAppender);
 
 				this.environment = env;
-				this.Username = env.getEnv().get(Environment.ENV_USER);
+				this.Username = username;
 				this.SshdCommandSender = new SSHDCommandSender();
 				this.SshdCommandSender.console = this;
-				thread	    = new Thread(this, "SSHD ConsoleShell " + this.Username);
+				thread	    = new Thread(this, "SSHD ConsoleShell " + username);
 				thread.start();
 			}
 			catch (Exception e)
 			{
+				e.printStackTrace();
 				throw new IOException("Error starting shell", e);
 			}
 		}   
@@ -129,7 +142,7 @@ public class ConsoleShellFactory implements ShellFactory
 		{
 			try
 			{
-				if (!SshdPlugin.instance.getConfig().getString("Mode").equals("RPC"))
+				if (!SshdPlugin.instance.getConfig().getString("Mode", "DEFAULT").equals("RPC"))
 					printPreamble(this.ConsoleReader);
 				while (true)
 				{
@@ -153,11 +166,15 @@ public class ConsoleShellFactory implements ShellFactory
 					}
 					// Hide the mkpasswd command input from other users.
 					Boolean mkpasswd = command.split(" ")[0].equals("mkpasswd");
+					Optional<String> optcred = PermissionUtil.GetCredential(this.Username, "console");
+
+					if (optcred.isPresent() && !optcred.get().contains("W"))
+						continue;
 
 					Bukkit.getScheduler().runTask(
 						SshdPlugin.instance, () ->
 						{
-							if (SshdPlugin.instance.getConfig().getString("Mode").equals("RPC") && command.startsWith("rpc"))
+							if (SshdPlugin.instance.getConfig().getString("Mode", "DEFAULT").equals("RPC") && command.startsWith("rpc"))
 							{
 								// NO ECHO NO PREAMBLE AND SHIT
 								String cmd = command.substring("rpc".length() + 1, command.length());
