@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.StringTokenizer;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -200,12 +201,27 @@ public class ConsoleShellFactory implements ShellFactory
 			}
 			catch (IOException e)
 			{
+				e.printStackTrace();
 				SshdPlugin.instance.getLogger().log(Level.SEVERE, "Error processing command from SSH", e);
 			}
 			finally
 			{
 				SshdPlugin.instance.getLogger().log(Level.INFO, this.Username + " disconnected from SSH.");
 				callback.onExit(0);
+			}
+		}
+
+		private String GetHostname()
+		{
+			try 
+			{
+				return InetAddress.getLocalHost().getHostName();
+			}
+			catch (UnknownHostException e)
+			{
+				e.printStackTrace();
+				SshdPlugin.instance.getLogger().log(Level.INFO, "The above stacktrace can be ignored, you likely have a misconfigured system hosts file.");
+				return "Unknown";
 			}
 		}
 
@@ -222,13 +238,14 @@ public class ConsoleShellFactory implements ShellFactory
 			}
 			catch (FileNotFoundException e)
 			{
+				e.printStackTrace();
 				SshdPlugin.instance.getLogger().log(Level.WARNING, "Could not open " + f + ": File does not exist.");
 				// Not showing the SSH motd is not a fatal failure, let the session continue. 
 			}
 
 			// Doesn't really guarantee our actual system hostname but
 			// it's better than not having one at all.
-			cr.println("Connected to: " + InetAddress.getLocalHost().getHostName() + " (" + Bukkit.getServer().getName() + ")\r");
+			cr.println("Connected to: " + this.GetHostname() + " (" + Bukkit.getServer().getName() + ")\r");
 			cr.println(ConsoleLogFormatter.ColorizeString(Bukkit.getServer().getMotd()).replaceAll("\n", "\r\n"));
 			cr.println("\r");
 			cr.println("Type 'exit' to exit the shell." + "\r");
