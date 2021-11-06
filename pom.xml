@@ -1,181 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<packaging>pom</packaging>
 
-    <groupId>com.ryanmichela</groupId>
-    <artifactId>sshd</artifactId>
-    <description>Minecraft-SSHD: The SSH daemon for Minecraft servers.</description>
-    <version>2.0.0</version>
-    <url>https://github.com/Justasic/Minecraft-SSHD/</url>
+	<groupId>com.ryanmichela</groupId>
+	<artifactId>szsshd-parent</artifactId>
+	<version>3.0.1</version>
+	<url>https://github.com/szumielxd/Minecraft-SSHD/</url>
+	<name>${pluginName}</name>
+	<description>Plugin for syncing server informations through database</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+	<properties>
+		<java.version>1.8</java.version>
+		<pluginName>SZSHD</pluginName>
+		<author>Ryan Michela, Haarolean, toxuin, Justin Crawford, Zachery Coleman, szumielxd</author>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bukkitMainClass>com.ryanmichela.sshd.bukkit.SshdPluginBukkit</bukkitMainClass>
+		<bungeeMainClass>com.ryanmichela.sshd.bungee.SshdPluginBungee</bungeeMainClass>
+	</properties>
 
-    <!-- Repositories -->
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/groups/public</url>
-        </repository>
-    </repositories>
+	<!-- Repositories -->
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/groups/public</url>
+		</repository>
+	</repositories>
 
-    <!-- License -->
-    <licenses>
-        <license>
-            <name>GPL2</name>
-            <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
-        </license>
-    </licenses>
+	<!-- License -->
+	<licenses>
+		<license>
+			<name>GPL2</name>
+			<url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+		</license>
+	</licenses>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>szsshd-logging</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>szsshd-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>szsshd-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>szsshd-bungee</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>szsshd-bukkit</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
-    <!-- Dependencies -->
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
-        </dependency>
+	<!-- Dependencies -->
+	<dependencies>
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-config</artifactId>
+			<version>1.16-R0.4-SNAPSHOT</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.md-5</groupId>
+			<artifactId>bungeecord-chat</artifactId>
+			<version>1.16-R0.4-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-core</artifactId>
-            <version>2.4.0</version>
-            <scope>compile</scope>
-            <type>jar</type>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-core</artifactId>
+			<version>2.6.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-mina</artifactId>
-            <version>2.4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-mina</artifactId>
+			<version>2.6.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-contrib</artifactId>
-            <version>2.4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-common</artifactId>
+			<version>2.6.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-common</artifactId>
-            <version>2.4.0</version>
-            <scope>compile</scope>
-            <type>jar</type>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.sshd</groupId>
+			<artifactId>sshd-sftp</artifactId>
+			<version>2.6.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.sshd</groupId>
-            <artifactId>sshd-sftp</artifactId>
-            <version>2.4.0</version>
-        </dependency>
+		<dependency>
+			<groupId>net.i2p.crypto</groupId>
+			<artifactId>eddsa</artifactId>
+			<version>0.3.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>net.i2p.crypto</groupId>
-            <artifactId>eddsa</artifactId>
-            <version>0.3.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-core</artifactId>
-            <version>2.1.3</version>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.mina</groupId>
+			<artifactId>mina-core</artifactId>
+			<version>2.1.4</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.28</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.28</version>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.30</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>jline</groupId>
-            <artifactId>jline</artifactId>
-            <version>2.12.1</version>
-        </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.30</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jline</groupId>
+			<artifactId>jline</artifactId>
+			<version>3.20.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jline</groupId>
+			<artifactId>jline-terminal-jansi</artifactId>
+			<version>3.20.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.0</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.1</version>
-            <scope>provided</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.1</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.10</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>compile</scope>
+			<type>jar</type>
+		</dependency>
 
-    <!-- Build -->
-    <build>
-        <defaultGoal>clean package</defaultGoal>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.20</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 
-        <resources>
-            <resource>
-                <targetPath>.</targetPath>
-                <filtering>true</filtering>
-                <directory>${basedir}/src/main/resources</directory>
-                <includes>
-                    <include>plugin.yml</include>
-                    <include>config.yml</include>
-                    <include>motd.txt</include>
-                </includes>
-            </resource>
-        </resources>
+	<!-- Build -->
+	<build>
+		<defaultGoal>clean package</defaultGoal>
 
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <finalName>${project.name}-${project.version}</finalName>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
-            
-            <!-- Compile plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <showDeprecation>true</showDeprecation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+		<plugins>
+			<!-- Compile plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <packaging>jar</packaging>
+	<modules>
+		<module>szsshd-bukkit</module>
+		<module>szsshd-bungee</module>
+		<module>szsshd-common</module>
+		<module>szsshd-logging</module>
+		<module>szsshd-api</module>
+		<module>szsshd-assembly</module>
+	</modules>
 </project>

@@ -1,9 +1,0 @@
-name: SSHD
-version: ${project.version}
-author: Ryan Michela, Haarolean, toxuin, Justin Crawford, Zachery Coleman
-main: com.ryanmichela.sshd.SshdPlugin
-load: STARTUP
-commands:
-  mkpasswd:
-    description: Make a SSHD password hash
-    usage: /mkpasswd <hash|help> <password>

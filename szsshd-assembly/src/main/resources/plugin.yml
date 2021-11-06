@@ -1,0 +1,7 @@
+name: ${pluginName}
+version: ${version}
+authors: [${author}]
+main: ${bukkitMainClass}
+website: ${url}
+
+api-version: 1.13
