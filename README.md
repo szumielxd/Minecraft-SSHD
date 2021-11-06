@@ -1,7 +1,8 @@
 Minecraft-SSHD
 ===========
 
-[![Release](https://img.shields.io/github/release/szumielxd/Minecraft-SSHD.svg?label=Release&maxAge=60)](https://github.com/szumielxd/Minecraft-SSHD/releases/latest)
+[![Release](https://img.shields.io/github/v/release/szumielxd/Minecraft-SSHD)](https://github.com/szumielxd/Minecraft-SSHD/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/szumielxd/Minecraft-SSHD/total)](https://github.com/szumielxd/Minecraft-SSHD/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Justasic/Minecraft-SSHD)](https://github.com/Justasic/Minecraft-SSHD/blob/master/LICENSE)
 
 <img align="left" width="140" height="140" src="docs/ssh_logo.png?raw=true" hspace="5" vspace="5" alt="diskover"><br/>
