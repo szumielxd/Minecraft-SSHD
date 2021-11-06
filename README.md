@@ -1,8 +1,7 @@
 Minecraft-SSHD
 ===========
 
-[![Build Status](https://travis-ci.org/Justasic/Minecraft-SSHD.svg?branch=master)](https://travis-ci.org/Justasic/Minecraft-SSHD)
-[![Release](https://img.shields.io/github/release/Justasic/Minecraft-SSHD.svg?label=Release&maxAge=60)](https://github.com/Justasic/Minecraft-SSHD/releases/latest)
+[![Release](https://img.shields.io/github/release/szumielxd/Minecraft-SSHD.svg?label=Release&maxAge=60)](https://github.com/szumielxd/Minecraft-SSHD/releases/latest)
 [![GitHub license](https://img.shields.io/github/license/Justasic/Minecraft-SSHD)](https://github.com/Justasic/Minecraft-SSHD/blob/master/LICENSE)
 
 <img align="left" width="140" height="140" src="docs/ssh_logo.png?raw=true" hspace="5" vspace="5" alt="diskover"><br/>
@@ -97,7 +96,4 @@ Minecraft-SSHD uses cryptographic certificates or a secure username and password
 
 
 ## Source Code
-[Get the source on GitHub](https://github.com/Justasic/Minecraft-SSHD "Source Code")
-
-## Our Discord
-https://discord.gg/DtrJFn
+[Get the source on GitHub](https://github.com/szumielxd/Minecraft-SSHD "Source Code")
