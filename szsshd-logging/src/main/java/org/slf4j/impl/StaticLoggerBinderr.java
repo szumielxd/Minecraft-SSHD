@@ -34,20 +34,20 @@ import org.slf4j.spi.LoggerFactoryBinder;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public class StaticLoggerBinderr implements LoggerFactoryBinder {
 
     /**
      * The unique instance of this class.
      *
      */
-    private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
+    private static final StaticLoggerBinderr SINGLETON = new StaticLoggerBinderr();
 
     /**
      * Return the singleton of this class.
      *
      * @return the StaticLoggerBinder singleton
      */
-    public static final StaticLoggerBinder getSingleton() {
+    public static final StaticLoggerBinderr getSingleton() {
         return SINGLETON;
     }
 
@@ -57,7 +57,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
      * The value of this field is usually modified with each release.
      */
     // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.6.99";  // !final
+    public static String REQUESTED_API_VERSION = "2.0.12";  // !final
 
 
     private static final String loggerFactoryClassStr = PluginSlf4jFactory.class.getName();
@@ -67,7 +67,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
      */
     private final ILoggerFactory loggerFactory;
 
-    private StaticLoggerBinder() {
+    private StaticLoggerBinderr() {
 //  Note: JCL gets substituted at build time by an appropriate Ant task
         loggerFactory = new PluginSlf4jFactory();
     }

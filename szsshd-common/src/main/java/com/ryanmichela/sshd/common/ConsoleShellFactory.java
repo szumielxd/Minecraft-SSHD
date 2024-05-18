@@ -1,27 +1,8 @@
 package com.ryanmichela.sshd.common;
 
-import com.ryanmichela.sshd.common.objects.CommonSender;
-
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-
-import org.apache.sshd.server.shell.ShellFactory;
-import org.jline.reader.EndOfFileException;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.InfoCmp.Capability;
-import org.apache.sshd.server.command.Command;
-import org.apache.sshd.server.channel.ChannelSession;
-import org.apache.sshd.common.util.logging.AbstractLoggingBean;
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.ExitCallback;
-
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-
-import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +11,24 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
+
+import org.apache.sshd.common.util.logging.AbstractLoggingBean;
+import org.apache.sshd.server.Environment;
+import org.apache.sshd.server.ExitCallback;
+import org.apache.sshd.server.channel.ChannelSession;
+import org.apache.sshd.server.command.Command;
+import org.apache.sshd.server.shell.ShellFactory;
+import org.jline.reader.EndOfFileException;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp.Capability;
+
+import com.ryanmichela.sshd.common.objects.CommonSender;
+
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 
 public class ConsoleShellFactory implements ShellFactory {
 	
@@ -108,7 +107,7 @@ public class ConsoleShellFactory implements ShellFactory {
 				this.environment = env;
 				this.Username = env.getEnv().get(Environment.ENV_USER);
 				this.sshdCommandSender = plugin.constructSSHDSender(this);
-				thread	    = new Thread(this, "SSHD ConsoleShell " + this.Username);
+				thread = new Thread(this, "SSHD ConsoleShell " + this.Username);
 				thread.start();
 			}
 			catch (Exception e) {
@@ -143,7 +142,7 @@ public class ConsoleShellFactory implements ShellFactory {
 					
 					// Emergency kill Java Virtual Machine - usefull on server crash
 					if (command.equals("--kill-jvm")) {
-						System.exit(9);
+						System.exit(0);
 						break;
 					}
 					// Clear the text from the screen (on supported terminals)
@@ -191,7 +190,7 @@ public class ConsoleShellFactory implements ShellFactory {
 			// Doesn't really guarantee our actual system hostname but
 			// it's better than not having one at all.
 			pw.println("Connected to: " + InetAddress.getLocalHost().getHostName() + " ("+plugin.getServerName()+")\r");
-			pw.println(ConsoleLogFormatter.colorizeString(plugin.getConfiguration().getString("motd")).replaceAll("\n", "\r\n"));
+			pw.println(ConsoleLogFormatter.colorizeString(plugin.getConfiguration().getString("motd")).replace("\n", "\r\n"));
 			pw.println("\r");
 			pw.println("Type 'exit' or press Ctrl+D to exit the shell." + "\r");
 			pw.println("Type '--kill-jvm' to EMERGENCY kill server." + "\r");

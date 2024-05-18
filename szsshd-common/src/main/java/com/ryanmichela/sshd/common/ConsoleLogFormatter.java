@@ -1,51 +1,51 @@
 package com.ryanmichela.sshd.common;
 
-/**
- * Copyright 2013 Ryan Michela
- */
-
-import net.md_5.bungee.api.ChatColor;
-import org.fusesource.jansi.Ansi;
+import static java.util.Map.entry;
 
 import java.awt.Color;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.regex.Pattern;
 
+import org.fusesource.jansi.Ansi;
+
+import net.md_5.bungee.api.ChatColor;
+
+/**
+ * Copyright 2013 Ryan Michela
+ */
+
 public class ConsoleLogFormatter extends Formatter {
 	
     private SimpleDateFormat dateFormat;
-    private static final Map<ChatColor, String> replacements = new HashMap<>();
+    private static final Map<ChatColor, String> replacements = Map.ofEntries(
+    		entry(ChatColor.BLACK, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).boldOff().toString()),
+        	entry(ChatColor.DARK_BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).boldOff().toString()),
+        	entry(ChatColor.DARK_GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).boldOff().toString()),
+        	entry(ChatColor.DARK_AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString()),
+        	entry(ChatColor.DARK_RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).boldOff().toString()),
+        	entry(ChatColor.DARK_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).boldOff().toString()),
+        	entry(ChatColor.GOLD, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).boldOff().toString()),
+        	entry(ChatColor.GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).boldOff().toString()),
+        	entry(ChatColor.DARK_GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.BLACK).boldOff().toString()),
+        	entry(ChatColor.BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.BLUE).boldOff().toString()),
+        	entry(ChatColor.GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.GREEN).boldOff().toString()),
+        	entry(ChatColor.AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.CYAN).boldOff().toString()),
+        	entry(ChatColor.RED, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.RED).boldOff().toString()),
+        	entry(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.MAGENTA).boldOff().toString()),
+        	entry(ChatColor.YELLOW, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.YELLOW).boldOff().toString()),
+        	entry(ChatColor.WHITE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.WHITE).boldOff().toString()),
+        	entry(ChatColor.MAGIC, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString()),
+        	entry(ChatColor.BOLD, Ansi.ansi().a(Ansi.Attribute.CONCEAL_ON).toString()),
+        	entry(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString()),
+        	entry(ChatColor.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString()),
+        	entry(ChatColor.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString()),
+        	entry(ChatColor.RESET, Ansi.ansi().a(Ansi.Attribute.RESET).toString()));
     private static final Pattern RGB_PATTERN = Pattern.compile("§x(§[0-9a-f]){6}", Pattern.CASE_INSENSITIVE);
-    static {
-    	replacements.put(ChatColor.BLACK, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLACK).boldOff().toString());
-		replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.BLUE).boldOff().toString());
-		replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.GREEN).boldOff().toString());
-		replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.CYAN).boldOff().toString());
-		replacements.put(ChatColor.DARK_RED, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.RED).boldOff().toString());
-		replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.MAGENTA).boldOff().toString());
-		replacements.put(ChatColor.GOLD, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.YELLOW).boldOff().toString());
-		replacements.put(ChatColor.GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fg(Ansi.Color.WHITE).boldOff().toString());
-		replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.BLACK).boldOff().toString());
-		replacements.put(ChatColor.BLUE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.BLUE).boldOff().toString());
-		replacements.put(ChatColor.GREEN, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.GREEN).boldOff().toString());
-		replacements.put(ChatColor.AQUA, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.CYAN).boldOff().toString());
-		replacements.put(ChatColor.RED, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.RED).boldOff().toString());
-		replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.MAGENTA).boldOff().toString());
-		replacements.put(ChatColor.YELLOW, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.YELLOW).boldOff().toString());
-		replacements.put(ChatColor.WHITE, Ansi.ansi().a(Ansi.Attribute.RESET).fgBright(Ansi.Color.WHITE).boldOff().toString());
-		replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Ansi.Attribute.BLINK_SLOW).toString());
-		replacements.put(ChatColor.BOLD, Ansi.ansi().a(Ansi.Attribute.CONCEAL_ON).toString());
-		replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Ansi.Attribute.STRIKETHROUGH_ON).toString());
-		replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Ansi.Attribute.UNDERLINE).toString());
-		replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Ansi.Attribute.ITALIC).toString());
-		replacements.put(ChatColor.RESET, Ansi.ansi().a(Ansi.Attribute.RESET).toString());
-    }
 
 	public ConsoleLogFormatter() {
         this.dateFormat = new SimpleDateFormat("HH:mm:ss");

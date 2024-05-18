@@ -18,6 +18,7 @@ import com.ryanmichela.sshd.common.SshdPlugin;
 
 import java.util.Arrays;
 import java.util.Set;
+import java.util.UUID;
 
 public class SSHDBukkitSender implements ConsoleCommandSender, CommandSender {
 	
@@ -25,7 +26,7 @@ public class SSHDBukkitSender implements ConsoleCommandSender, CommandSender {
 	private final PermissibleBase perm = new PermissibleBase(this);
 	private final SSHDConversationTracker conversationTracker = new SSHDConversationTracker();
 	// Set by the upstream allocating function
-	public ConsoleShellFactory.ConsoleShell console;
+	public final ConsoleShellFactory.ConsoleShell console;
 	@SuppressWarnings("unused")
 	private final SshdPlugin plugin;
 	
@@ -39,13 +40,12 @@ public class SSHDBukkitSender implements ConsoleCommandSender, CommandSender {
 	}
 
 	public void sendRawMessage(String message) {
-		if (this.console.consoleReader == null) return;
-		
-		this.console.consoleReader.printAbove(ConsoleLogFormatter.colorizeString(message).replace("\n", "\n\r"));
-		return;
+		if (this.console.consoleReader != null) {
+			this.console.consoleReader.printAbove(ConsoleLogFormatter.colorizeString(message).replace("\n", "\n\r"));
+		}
 	}
 
-	public void sendMessage(String[] messages) {
+	public void sendMessage(String... messages) {
 		Arrays.asList(messages).forEach(this::sendMessage);
 	}
 
@@ -135,5 +135,20 @@ public class SSHDBukkitSender implements ConsoleCommandSender, CommandSender {
 
 	public CommandSender.Spigot spigot(){
 		return null;
+	}
+
+	@Override
+	public void sendRawMessage(UUID sender, String message) {
+		this.sendRawMessage(message);
+	}
+
+	@Override
+	public void sendMessage(UUID sender, String message) {
+		this.sendMessage(message);
+	}
+
+	@Override
+	public void sendMessage(UUID sender, String... messages) {
+		this.sendMessage(messages);
 	}
 }

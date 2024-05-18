@@ -4,6 +4,9 @@ import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.ErrorHandler;
 import org.apache.logging.log4j.core.Layout;
 import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.DefaultErrorHandler;
+
+import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -15,8 +18,10 @@ import java.util.logging.StreamHandler;
  */
 public class StreamHandlerAppender implements Appender {
 
-	private StreamHandler streamHandler;
+	@Getter private StreamHandler streamHandler;
 	private UUID uuid;
+	@Getter private State state = null;
+	@Getter private ErrorHandler handler = new DefaultErrorHandler(this);
 
 	public StreamHandlerAppender(StreamHandler streamHandler) {
 		this.streamHandler = streamHandler;
@@ -60,33 +65,31 @@ public class StreamHandlerAppender implements Appender {
 	}
 
 	@Override
-	public ErrorHandler getHandler() {
-		return null;
-	}
-
-	@Override
 	public void setHandler(ErrorHandler errorHandler) {
 	}
 
 	@Override
 	public void start() {
+		this.state = State.STARTED;
 	}
 
 	@Override
 	public void stop() {
+		this.state = State.STOPPED;
 	}
 
 	@Override
 	public boolean isStarted() {
-		return true;
+		return this.state == State.STARTED;
 	}
 
 	@Override
 	public boolean isStopped() {
-		return false;
+		return this.state == State.STOPPED || this.state == State.STOPPING;
 	}
-	
-	public StreamHandler getStreamHandler() {
-		return this.streamHandler;
+
+	@Override
+	public void initialize() {
+		this.state = State.INITIALIZED;
 	}
 }

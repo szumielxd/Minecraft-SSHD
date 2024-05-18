@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>com.ryanmichela</groupId>
 		<artifactId>szsshd-parent</artifactId>
-		<version>3.0.1</version>
+		<version>${revision}</version>
 	</parent>
 	<dependencies>
 		<dependency>

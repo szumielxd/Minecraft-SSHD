@@ -141,11 +141,13 @@ public final class SshdPluginBukkit extends JavaPlugin implements SshdPlugin {
 	@Override
 	public void addHandler(StreamHandlerAppender handler) {
 		((org.apache.logging.log4j.core.Logger)LogManager.getRootLogger()).addAppender(handler);
+		handler.start();
 	}
 
 	@Override
 	public void removeHandler(StreamHandlerAppender handler) {
 		((org.apache.logging.log4j.core.Logger)LogManager.getRootLogger()).removeAppender(handler);
+		handler.stop();
 	}
 
 	@Override
